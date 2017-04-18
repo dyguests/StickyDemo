@@ -8,14 +8,17 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.timehop.stickyheadersrecyclerview.StickyRecyclerHeadersAdapter;
 import com.timehop.stickyheadersrecyclerview.StickyRecyclerHeadersDecoration;
+import com.timehop.stickyheadersrecyclerview.StickyRecyclerHeadersTouchListener;
 
 public class MainActivity extends AppCompatActivity {
 
     private RecyclerView recyclerView;
     private MyAdapter adapter;
+    private StickyRecyclerHeadersDecoration headersDecoration;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,7 +32,20 @@ public class MainActivity extends AppCompatActivity {
         adapter = new MyAdapter();
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        recyclerView.addItemDecoration(new StickyRecyclerHeadersDecoration(adapter));
+        headersDecoration = new StickyRecyclerHeadersDecoration(adapter);
+        recyclerView.addItemDecoration(headersDecoration);
+
+        StickyRecyclerHeadersTouchListener headersTouchListener =
+                new StickyRecyclerHeadersTouchListener(recyclerView, headersDecoration) {};
+        headersTouchListener.setOnHeaderClickListener(
+                new StickyRecyclerHeadersTouchListener.OnHeaderClickListener() {
+                    @Override
+                    public void onHeaderClick(View header, int position, long headerId) {
+                        Toast.makeText(MainActivity.this, "Header position: " + position + ", id: " + headerId,
+                                Toast.LENGTH_SHORT).show();
+                    }
+                });
+        recyclerView.addOnItemTouchListener(headersTouchListener);
     }
 
     private class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> implements StickyRecyclerHeadersAdapter<MyAdapter.HeaderViewHolder> {
