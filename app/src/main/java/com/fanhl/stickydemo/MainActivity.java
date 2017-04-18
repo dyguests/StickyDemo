@@ -46,6 +46,12 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
         recyclerView.addOnItemTouchListener(headersTouchListener);
+        adapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
+            @Override
+            public void onChanged() {
+                headersDecoration.invalidateHeaders();
+            }
+        });
     }
 
     private class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> implements StickyRecyclerHeadersAdapter<MyAdapter.HeaderViewHolder> {
